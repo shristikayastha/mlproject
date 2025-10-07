@@ -18,7 +18,8 @@ from source.exception import CustomException
 from source.logger import logging
 
 
-
+from source.components.model_trainer import ModelTrainerConfig
+from source.components.model_trainer import ModelTrainer
 
 ###config setup
 # This dataclass stores file paths where data will be saved:
@@ -86,11 +87,16 @@ class DataIngestion:
 if __name__ == "__main__":
     from source.components.data_transformation import DataTransformation
 
+    # Data Ingestion 
     obj = DataIngestion()
-    train_path, test_path = obj.initiate_data_ingestion()  # obj.initiate_data_ingestion()
-##→ Reads your stud.csv, splits into train/test, and returns their paths
+    train_path, test_path = obj.initiate_data_ingestion()
 
+    #  Data Transformation 
     data_transformation = DataTransformation()
-    train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_path, test_path)##Stores those file paths in variables and applies preprocessing and saves preprocessor.pkl..
+    train_arr, test_arr, preprocessor_path = data_transformation.initiate_data_transformation(train_path, test_path)
 
     print("\nData ingestion and transformation completed successfully!")
+
+    #  Model Training 
+    model_trainer = ModelTrainer()
+    print(model_trainer.initiate_model_trainer(train_arr, test_arr, preprocessor_path))
